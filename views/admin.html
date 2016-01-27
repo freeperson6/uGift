@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Carpool309 - Admin Panel</title>
+    <link href="../css/chatWindow.css" rel="stylesheet"/>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="./css/font-awesome.min.css">
+  <link href="css/admin.css" rel="stylesheet">
+  <script src="/socket.io/socket.io.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+  </head>
+  <body onload="getUnreadMsgs();">
+  <div id="bg"></div>
+    <nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/" loggedInUser="{{profile.email}}" style="padding:0px">
+        <img src="/img/logo.png" style="height:50px; width:50px"> </img>
+      </a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+        <li class=""><a href="/users">Home </a></li>
+        {% if (profile.userType>0) %}
+        <li class="active"><a href="/admin">Admin Panel <span class="sr-only">(current)</span></a></li>
+        {% endif %}
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+          <a id="notifyMsg" href="#" class="glyphicon glyphicon-envelope dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            <em class="W_new_count hidden">New</em>
+          </a>
+          <ul id="newMsgList" class="dropdown-menu hidden">
+            <!-- <li>aaaa</li> -->
+          </ul>
+        </li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="padding-bottom:0px; padding-top:10px;">
+          <img id="nav-profilePic" src="" style="width:30px; height:30px;"></img>
+          {{ profile.displayName || profile.email }}
+          <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="/users/{{profile.id}}">Profile</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="/api/logout">Sign out</a></li>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<div id="resultPanel"></div>
+
+<div class="alert alert-success" role="alert">Current number of Online Users: {{ numOnlineUsers }}</div>
+
+<div id="users" class="col-xs-12 col-md-4">
+  <div class="panel panel-info" style="background: rgba(217, 237, 247,0.4)">
+    <div class="panel-heading">
+      <h2 class="panel-title">User List</h2>
+    </div>
+    <div class="panel-body table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Email</th>
+              <th>Display Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for user in users %}
+            <tr class="user-row" data-id="{{user.id}}">
+              <th>{{user.email}}</th>
+              <th>{{user.displayName || user.email}}</th>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+    </div>
+  </div>
+</div>
+
+<div id="reviews" class="col-xs-12 col-md-4">
+  <div class="panel panel-info" style="background: rgba(217, 237, 247,0.4)">
+    <div class="panel-heading">
+      <h2 class="panel-title">Reviews</h2>
+    </div>
+    <div class="panel-body table-responsive">
+      <table class="table table-hover">
+          <tbody>
+            {% if !feedbacks.length %}
+              <span> No review submitted </span>
+            {% endif %}
+            {% for feedback in feedbacks %}
+            <tr>
+              <th class="feedback-row" data-id="{{feedback._id}}" data-receiver="{{feedback.receiver._id}}">
+                <span class="ui-state-default">"{{feedback.comment}}"</li><br>
+                <small class="pull-right text-muted">
+                <small>rating: {{feedback.rating}}/5 </small><br>
+                <small>{{feedback.sender.displayName}} >>> {{feedback.receiver.displayName}}</small><br>
+                <span class="glyphicon glyphicon-time"></span> {{feedback.date}}</small><br><br>
+              </th>
+              <th><button type='button' class='delete-feedback close' data-id="{{feedback._id}}" aria-label='Close'><span aria-hidden='true'>&times;</span></button></th>
+            </tr>
+            {% endfor %}
+          </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="trips" class="col-xs-12 col-md-4">
+  <div class="panel panel-info" style="background: rgba(217, 237, 247,0.4)">
+    <div class="panel-heading">
+      <h2 class="panel-title">Trips</h2>
+    </div>
+    <div class="panel-body table-responsive">
+      <div class="">
+        {% if (allTrips != '' || allTrips != null)%}
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th>User</th>
+                  <th>From</th>
+                  <th>To</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for trip in allTrips %}
+                <tr class="" data-id="{{trip._id}}">
+                  <th class="trip-row" data-id="{{trip._id}}">{{trip.user.displayName || trip.user.email}} 
+                  {% if trip.provider %}
+                  <span class="label label-primary">Provider</span>
+                  {% else %}
+                  <span class="label label-info">Wanter</span>
+                  {% endif %}
+                  </th>
+                  <th class="trip-row" data-id="{{trip._id}}">{{trip.startPoint.text}}</th>
+                  <th class="trip-row" data-id="{{trip._id}}">{{trip.endPoint.text}}</th>
+                  <th><button type='button' class='delete-trip close' data-id="{{trip._id}}" aria-label='Close'><span aria-hidden='true'>&times;</span></button></th>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <span>No trip is searched for all users.</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/nav.js"></script>
+    <script src="js/userList.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/log.js"></script>
+    
+  </body>
+</html>

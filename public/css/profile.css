@@ -1,0 +1,218 @@
+#bg {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: url(../img/bg.png) no-repeat center center fixed;
+    background-size: cover;
+    background-attachment: fixed;
+    width: 100%;
+    height: 100%;
+    opacity : 0.8;
+    z-index: -1;
+}
+
+.input-group{
+	margin-bottom:4px;
+}
+
+section{
+    position:absolute;
+    top:0; right:0;
+    bottom:0; left:0;
+    font-size: 16px;
+}
+
+#content {
+    float: none;
+}
+
+.vcenter-wrapper { display:table; }
+.vcenter { display:table-cell; vertical-align:middle; }
+
+h1{
+	font-weight: bold;
+}
+
+dt{
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+dd{
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
+.img_wrapper{
+	background: white;
+	max-width: 150px;
+	color: #aaa;
+	font-size: 18px;
+	font-family: Arial, sans-serif;
+	border-radius: 10px;
+}
+#profilePic_preview{
+	background: white;
+	width: 150px;
+    height: 150px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+
+#edit {
+    float: right;
+}
+
+.right{
+    float:right;
+}
+
+.center{
+    float: none;
+    margin: 0 auto;
+    overflow:auto;
+}
+
+.jumbotron{
+    border-radius: 10px;
+}
+
+.jumboton2{
+    margin-top:10px;
+    background-color: #B8B8B8;
+    padding:10px;
+    border-radius: 10px;
+}
+
+.jumbotron3{
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: lightyellow;
+}
+
+#nav-profilePic{
+    object-fit: cover;
+}
+
+#behavior{
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    text-align: center;
+}
+
+#ratingResult, #comments{
+  margin-top: 10px;
+  padding: 10px;
+}
+#userComment{
+  margin-right: 5px;
+}
+#commentButton{
+  margin-left: 5px;
+}
+
+.animated {
+   -webkit-transition: height 0.2s;
+   -moz-transition: height 0.2s;
+   transition: height 0.2s;
+}
+
+.stars
+{
+   margin: 20px 0;
+   font-size: 24px;
+   color: #d17581;
+}
+
+#map {
+    height: 400px;
+    width: 30%;
+    z-index: 9999;
+    float: left;
+    border-radius: 15px;
+}
+
+#map2 {
+    height: 400px;
+    width: 30%;
+    z-index: 9999;
+    float: right;
+    border-radius: 15px;
+}
+
+#tripDescription {
+    float: center;
+}
+
+.glyphicon { margin-right:5px;}
+
+
+.rating .glyphicon {font-size: 22px;}
+.rating-num { margin-top:0px;font-size: 54px; }
+.progress { margin-bottom: 5px;}
+.progress-bar { text-align: left; }
+.rating-desc .col-md-3 {padding-right: 0px;}
+.sr-only { margin-left: 5px;overflow: visible;clip: auto; }
+
+.btn-primary {
+    border-color:transparent;
+}
+
+#resultPanel {
+    float: right;
+    position: absolute;
+    right: 0px;
+    width:300px;
+    z-index: 10000;
+}
+#chat {
+    margin-top: 10px;
+}
+.glyphicon-envelope{
+    font-size: 25px;
+}
+.W_new_count {
+    position: absolute;
+    right: -4px;
+    top: 2px;
+    font-size: 13px;
+    color: red;
+}
+.rtSideBtn{
+    margin-right: 0px;
+}
+
+.top{
+    z-index: 10000;
+}
+
+a{
+    color: #777;
+}
+
+.ui-state-default{
+	color:darkblue;
+	text-align: left;
+	margin-left: 8%;
+}

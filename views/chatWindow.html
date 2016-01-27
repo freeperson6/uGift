@@ -1,0 +1,36 @@
+<div class="popupBox" id="chatBox">
+      <div class="panel" style="height:30">
+        <div class="panel-heading" id="heading">
+          <span class="chatHead pull-left" id="receiver">
+            <img id="receiverImg" src="" alt="receiverImg" style="float:left;max-height:50px;width:50px;"> 
+            <div id="displayName"></div>
+          </span>
+          <span class="controllers pull-right">
+            <div class="btn-group">
+              <button type="button" class="control-button slide" data-toggle="collapse" data-parent="#heading" href="#collapseBody">
+                <i id="slideDown" class="glyphicon glyphicon-chevron-down rtSideBtn">
+                </i>
+              </button>
+            </div>
+            <div class="btn-group">
+              <button data-widget="remove" id="removeBox" class="control-button" type="button"><i class="glyphicon glyphicon-remove rtSideBtn"></i>
+              </button>
+            </div>
+          </span>
+        </div>
+        <div class="panel-collapse in" id="collapseBody">
+          <div class="panel-body">
+            <div id="messages"></div>
+          </div>
+          <div class="panel-footer">
+            <form id="inputMsg">
+              <input id="profileEmail" type="hidden" name="email" value="{{ profile.email }}">
+              <textarea id="msg" class="chatArea" rows="3" cols="50" placeholder="Type your message" ></textarea>
+              <button id ='msgButton'class="btn btn-warning btn-sm pull-right">
+                <i class="glyphicon glyphicon-send" id="btn-chat"></i></button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    
