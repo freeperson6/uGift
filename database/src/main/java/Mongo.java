@@ -29,7 +29,7 @@ public class Mongo {
         /**** Get collection / table from 'testdb' ****/
         // if collection doesn't exists, MongoDB will create it for you
         DBCollection table = db.getCollection("user");
-        return table
+        return table;
     } catch (UnknownHostException e) {
         e.printStackTrace();
     } catch (MongoException e) {
@@ -63,7 +63,12 @@ public class Mongo {
                 System.out.println(cursor.next());
         }
 
+    } catch (UnknownHostException e) {
+        e.printStackTrace();
+    } catch (MongoException e) {
+        e.printStackTrace();
     }
+
 
   }
 
@@ -88,4 +93,4 @@ public class Mongo {
 
   }
 
-  
+}  
