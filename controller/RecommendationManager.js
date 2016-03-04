@@ -1,4 +1,4 @@
-var debug = require('debug')('FeedbackManager.js');
+var debug = require('debug')('RecommendationManager.js');
 var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 var xssFilters = require('xss-filters');
@@ -10,7 +10,7 @@ var RecommendationSchema, Recommendation;
 * database
 * params: the url and port that the database manager listens to
 */
-function FeedbackManager(url){
+function RecommendationManager(url){
 	//connect to the database
 	mongoose.createConnection(url);
 	this.db = mongoose.connection;
@@ -25,6 +25,55 @@ function FeedbackManager(url){
 	Recommendation = mongoose.model('Recommendation', RecommendationSchema);
 }
 
+RecommendationManager.prototype.addRecommendation = function(recommendation, callback){
+	var newRecommendation = new Recommendation(recommendation);
+	newRecommendation.save(function(error,data){
+		if(error){
+    		console.log("[ERROR]: fail to add new recommendation to databae");
+        	callback(false,"Internal Server Error");
+        	return;
+		}
+		else{
+			callback(true, data);
+			return;
+		}
+	});
+}
+
+RecommendationManager.prototype.getRecommendationList = function(sender, callback){
+	Recommendation.find({sender:sender}, function(err, recommendations){
+		if(err) {
+			callback(false, "Internal Server Error");
+			return;
+		} else {
+			callback(true, recommendations);
+		}
+	});
+}
+
+RecommendationManager.prototype.getOneRecommendation = function(recommendationId, callback){
+	Recommendation.findOne({_id:recommendationId}, function(err, recommendation){
+		if(err) {
+			callback(false, "Internal Server Error");
+			return;
+		} else {
+			callback(true, recommendation);
+		}
+	});
+}
+
+RecommendationManager.prototype.updateRecommendation = function(recommendation, products, callback){
+	console.log(recommendation._id, products[0].name);
+	Recommendation.update(
+		{_id:recommendation._id}, 
+		{$set: {productName:products[0].name}},
+		function(err, results){
+			if(!err){
+				callback(true);
+			}
+		}
+	);
+}
 
 //export the module as a library
-module.exports = FeedbackManager;
+module.exports = RecommendationManager;

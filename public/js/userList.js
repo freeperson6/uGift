@@ -115,6 +115,10 @@ and return to the website of the searched resutl
 			}
 		})
 	});
+
+	$('#personality').click(function(){
+		window.location.href = "/personalityTest"
+	});
 });
 
 /*----------------------------------------------------------------

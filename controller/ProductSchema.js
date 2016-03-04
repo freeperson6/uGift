@@ -3,9 +3,9 @@ var autoIncrement = require('mongoose-auto-increment');
 
 ProductSchema = mongoose.Schema({
 	name: String,
-	date: String,
-	price: Number,
-	productTags: [String] 
+	url: String,
+	createdDate: String,
+	tag: [String]
 });
 
 ProductSchema.plugin(autoIncrement.plugin, 'Product');

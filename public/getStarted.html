@@ -16,6 +16,24 @@
 
 	</head>
 	<body>
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '230320873978086',
+          xfbml      : true,
+          version    : 'v2.5'
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
+
     <div id="background"></div>
     <!--login modal-->
     <div id="loginModal" class="modal show" tabindex="-1" role="dialog" aria-hidden="true">
@@ -42,7 +60,11 @@
           </div>
           <div class="modal-footer">
             <div class="col-md-12">
-              <div id="my-signin2"></div>
+              <fb:login-button scope="public_profile,email" onlogin="checkLoginState();" data-size="xlarge" class="col-md-6">
+              </fb:login-button>
+              <div id="status">
+              </div>
+              <div id="my-signin2" class="col-md-6"></div>
             </div>
           </div>
       </div>
@@ -130,6 +152,7 @@
 		<script src="js/bootstrap.min.js"></script>
     <script src="js/getStarted.js"></script>
     <script src="js/googleLogin.js"></script>
+    <script src="js/facebookLogin.js"></script>
     <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
     <canvas id="canvas" class="hidden"></canvas>
 	</body>

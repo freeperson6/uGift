@@ -101,11 +101,11 @@ var MONGODB_URL = 'mongodb://localhost/';
 var UserManager = require('./controller/UserManager.js');
 var userManager = new UserManager(MONGODB_URL);
 
-//Product databse
+//Recommendation databse
 var RecommendationManager = require('./controller/RecommendationManager.js');
 var recommendationManager = new RecommendationManager(MONGODB_URL);
 
-//Remommendation databse
+//Product databse
 var ProductManager =  require('./controller/ProductManager.js');
 var productManager = new ProductManager(MONGODB_URL);
 
@@ -160,9 +160,14 @@ And pass into the render function for userList.html
 app.get('/users', function(req, res){
 	userManager.getUser(req.session._id,function(success, profile){
 		userManager.getUserList(function(users){
-			res.render('userList.html', {
-   				profile: profile, users: users
-   			});
+			recommendationManager.getRecommendationList(req.session._id, function(success, recommendations){
+				//console.log(recommendations);
+				if (success){
+					res.render('userList.html', {
+	   					profile: profile, users: users, recommendations: recommendations
+	   				});
+				}
+			})
 		})
 	});
 	var user = {
@@ -469,6 +474,64 @@ app.post('/api/log', function(req, res){
 /********************** User Account End *************************/
 
 /********************** Recommendation API ***********************/
+app.get('/personalityTest', function(req,res){
+	var user = {
+		_id: req.session._id
+	}
+	//userManager.logPage(user,page);
+	userManager.getUser(req.session._id,function(success,profile){
+		if(!success){
+			res.redirect('/users');
+			return;
+		}
+		res.render('../public/personalityTest.html', {
+   			profile: profile, user: user, mostVisitedPage: "***disabled***"
+		});
+	});
+});
+
+app.post('/personalityTest/result', function(req,res){
+	var recommendation = req.body;
+	recommendation.sender = req.session._id;
+	recommendationManager.addRecommendation(recommendation, function(success, recommendation){
+		if(success){
+			res.send(recommendation);
+		}
+		else{
+			res.writeHead(400,"Internal Server Failuer");
+			res.end("Internal Server Failuer");
+		}
+	});
+})
+
+app.get('/searchAndShowproducts/:id', function(req,res){
+	var recommendationId = req.params.id;
+	var user = {
+		_id: req.session._id
+	}
+	//userManager.logPage(user,page);
+	userManager.getUser(req.session._id,function(success,profile){
+		if(!success){
+			res.redirect('/users');
+			return;
+		}
+		recommendationManager.getOneRecommendation(recommendationId,function(success,recommendation){
+			if (success){
+				productManager.findProduct(recommendation,function(success,products){
+					if(success){
+						res.render('products.html', {
+			   				profile: profile, user: user, mostVisitedPage: "***disabled***", products: products
+						});
+					}
+					else{
+						res.writeHead(400,"Internal Server Failuer");
+						res.end("Internal Server Failuer");			
+					}
+				});
+			}
+		});
+	});
+})
 /********************** Recommendation API End *******************/
 
 /********************** Product API ******************************/
