@@ -20,6 +20,7 @@ $(document).ready(function(){
       sender: -1,
       receiver: "anonymous",
       receiverTags: selectedTags,
+      productID: [],
       productName: null,
       rating: -1,
       date: Date()

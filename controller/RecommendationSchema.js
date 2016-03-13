@@ -6,6 +6,7 @@ RecommendationSchema = mongoose.Schema({
 	receiver: String,
 	receiverTags: [String],
 	//product: {type: Number, ref: 'Product'},
+	productID: [String],
 	productName: String,
 	rating: Number,
 	date: String

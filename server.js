@@ -14,6 +14,7 @@ var express = require('express');
 var app = express();
 var compression = require('compression');
 var ROOT = { root: __dirname+'/public' };
+var spawn = require('child_process').spawn;
 
 /*------------------------------------------------------
 Declare what does express uses
@@ -244,21 +245,49 @@ app.post('/api/login', function(req, res) {
 				res.writeHead(400,user);
 				res.end(user);
 			}
-		})
-	} else {
+		});
+	} 
+	else {
 		var profile = JSON.parse(req.body.json);
-		userManager.login(profile, function(success,user){
-			if(success){
-				req.session._id = user._id;
-				req.session.email = user.email;
-				req.session.displayName = user.displayName;
-				res.end("OK");
-				debug("Login success!")
-			} else {
-				res.writeHead(400,user);
-				res.end(user);
-			}
-		})
+		if (!profile.password.enabled){
+			var profile = JSON.parse(req.body.json);
+			userManager.loginFacebook(profile, function(success,user){
+				if(success && user){
+					debug("User already existed and Login");
+					req.session._id = user._id;
+					req.session.email = user.email;
+					req.session.displayName = user.displayName;
+					res.end(JSON.stringify({isLogin: true}));
+				} else if(success && !user){
+					debug("User NOT found, create user")
+					userManager.createUserFacebook(profile, function(success,user){
+						if(success && user){
+							req.session._id = user._id;
+							req.session.email = user.email;
+							req.session.displayName = user.displayName;
+							res.end(JSON.stringify({isLogin: true}));
+						}
+					})
+				} else {
+					res.writeHead(400,user);
+					res.end(user);
+				}
+			});	
+		}
+		else{
+			userManager.login(profile, function(success,user){
+				if(success){
+					req.session._id = user._id;
+					req.session.email = user.email;
+					req.session.displayName = user.displayName;
+					res.end("OK");
+					debug("Login success!")
+				} else {
+					res.writeHead(400,user);
+					res.end(user);
+				}
+			});
+		}
 	}
 });
 
@@ -504,6 +533,55 @@ app.post('/personalityTest/result', function(req,res){
 	});
 })
 
+app.post('/facebookProfile', function(req,res){
+	var recommendation = req.body;
+	recommendation.sender = req.session._id;
+	recommendationManager.addRecommendation(recommendation, function(success, recommendation){
+		if(success){
+			console.log("I am generating receiver tags!");
+			var childReceiverTag = spawn('java',['-jar', 'C:\\Users\\Xu\\Documents\\NetBeansProjects\\FacebookWebCrawler\\dist\\FacebookWebCrawler.jar', recommendation._id]);
+			childReceiverTag.on('close',function(code){
+				if(code != 0){
+					res.writeHead(400,"Internal Server Failuer");
+					res.end("Internal Server Failuer");					
+				}
+				else{
+					console.log("I finished generating receiver tags!");
+					res.send(recommendation);				
+				}
+			});
+			//console.log("I am doing on demand search!");
+			/*var childOnDemandSearch = spawn('java', ['-jar', 'C:\\Users\\Xu\\Desktop\\WebCrawler\\dist\\AmazonWebCrawler.jar', "'basketball'"]);
+			childOnDemandSearch.on('close', function(code){
+				if(code != 0){
+					res.writeHead(400,"Internal Server Failuer");
+					res.end("Internal Server Failuer");					
+				}
+				else{
+					//var childSearch = spawn('python', []);
+					//childSearch.on('close', function(code){
+					console.log("I am finished with on demand search!");
+					res.send(recommendation);
+					//});
+				}
+
+			});*/
+			//Call child process to call Eric's script first
+
+			//Invoke on deman search from Bill if necessary
+
+			//Once eric is finsed, call ray's script to search
+
+			//Tell client, search is finishd and stored in database
+		}
+		else{
+			res.writeHead(400,"Internal Server Failuer");
+			res.end("Internal Server Failuer");
+		}
+	});
+})
+
+
 app.get('/searchAndShowproducts/:id', function(req,res){
 	var recommendationId = req.params.id;
 	var user = {
@@ -532,6 +610,50 @@ app.get('/searchAndShowproducts/:id', function(req,res){
 		});
 	});
 })
+
+
+app.get('/facebookProfile/results/:id', function(req,res){
+	var recommendationId = req.params.id;
+	var user = {
+		_id: req.session._id
+	}
+	//userManager.logPage(user,page);
+	userManager.getUser(req.session._id,function(success,profile){
+		if(!success){
+			res.redirect('/users');
+			return;
+		}
+		recommendationManager.getOneRecommendation(recommendationId,function(success,recommendation){
+			if (success){
+				productManager.findAllProductsByID(recommendation,function(success,products){
+					if(success){
+						res.render('products.html', {
+			   				profile: profile, user: user, mostVisitedPage: "***disabled***", products: products
+						});
+					}
+					else{
+						res.writeHead(400,"Internal Server Failuer");
+						res.end("Internal Server Failuer");			
+					}
+				});
+			}
+		});
+	});
+});
+
+app.get('/find/product/:id', function(req,res){
+	var productId = req.params.id;
+	productManager.findProductById(productId, function(success, product){
+		if(success){
+			res.redirect(product.url);
+		}
+		else{
+			res.writeHead(400,"Internal Server Failuer");
+			res.end("Internal Server Failuer");				
+		}
+	});
+	console.log(productId);
+});
 /********************** Recommendation API End *******************/
 
 /********************** Product API ******************************/

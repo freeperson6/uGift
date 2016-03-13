@@ -11,7 +11,7 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
   	<!-- Font Awesome -->
   	<link rel="stylesheet" href="../css/font-awesome.min.css">
-    <link href="/css/trips.css" rel="stylesheet">
+    <link href="/css/products.css" rel="stylesheet">
     <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -63,7 +63,7 @@
     </nav>
 
 
-    <div id="content" class="col-xs-12 col-md-7 col-md-offset-1 container">
+    <div id="content" class="col-xs-12 col-md-10 col-md-offset-1 container">
       <div class="panel panel-info" style="background: rgba(217, 237, 247,0.4)">
         <div class="panel-heading">
           <h1 class="panel-title">List of products returned:</h1>
@@ -77,17 +77,19 @@
               <table class="table table-hover">
                 <thead>
                   <tr>
-                    <th>Product's Name</th>
-                    <th>Products's Tag</th>
-                    <th>Products's Date</th>
+                    <th>Product's ID</th>
+                    <th>Products's Name</th>
+                    <th>Products's Rating</th>
+                    <th>Products's Price</th>
                   </tr>
                 </thead>
                 <tbody>
                 {% for product in products %}
-                  <tr class="trip-row" data-id="{{trip.user}}/?trip={{trip._id}}">
-                    <th>{{product.name}}</th>
-                    <th>{{product.tag}}</th>
-                    <th>{{product.createdDate}}</th>
+                  <tr class="product-row" data-id="{{product.ID}}">
+                    <th><a href="{{product.url}}">{{product.ID}}</a></th>
+                    <th><a href="{{product.url}}">{{product.name}}</a></th>
+                    <th><a href="{{product.url}}">{{product.rating}}</a></th>
+                    <th><a href="{{product.url}}">{{product.price}}</a></th>
                   </tr>
                 {% endfor %}
               {% endif %}
@@ -104,7 +106,7 @@
     <script src="/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
     <script src="/js/nav.js"></script>
-    <script src="/js/trips.js"></script>
+    <script src="/js/products.js"></script>
     <script src="/js/log.js"></script>
   </body>
 </html>

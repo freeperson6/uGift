@@ -63,10 +63,14 @@ RecommendationManager.prototype.getOneRecommendation = function(recommendationId
 }
 
 RecommendationManager.prototype.updateRecommendation = function(recommendation, products, callback){
-	console.log(recommendation._id, products[0].name);
+	//console.log(recommendation._id, products[0].name);
+	var productID = [];
+	for (var product in products){
+		productID.push(products[product].ID);
+	}
 	Recommendation.update(
 		{_id:recommendation._id}, 
-		{$set: {productName:products[0].name}},
+		{$set: {productName:products[0].name, productID:productID}},
 		function(err, results){
 			if(!err){
 				callback(true);

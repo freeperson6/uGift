@@ -85,6 +85,53 @@ UserManager.prototype.loginGoogle = function(profile, callback){
 	}).end();
 }
 
+UserManager.prototype.loginFacebook = function(profile, callback){
+	User.findOne({email: profile.email},function(err,user){
+		if(err){
+			callback(false,"Internal Server Error");
+			return;
+		} else {
+			callback(true,user);
+			return;
+		}
+	});
+}
+
+UserManager.prototype.createUserFacebook = function(profile, callback){
+	var userType = 0;
+	userType = 2;
+	var profilePic = "/img/default_profilePic.png";
+	//initialize the profile to save in database
+	var newProfile = {
+		userType: userType,
+		email: profile.email,
+		password: {enabled:false},
+		//description: profile.description,
+		displayName: profile.displayName,
+		profilePic: profilePic,
+		admin: false,
+		totalRating: 0,
+		numberOfRating: 0,
+		averageRating: 0,
+		fiveStars: 0,
+		fourStars: 0,
+		threeStars: 0,
+		twoStars: 0,
+		oneStars: 0
+	}
+	var newUser = new User(newProfile);
+
+	newUser.save(function(error, data){
+    	if(error){
+    		console.log("[ERROR]\t[UserManager.js]\tCannot save user to database: " + error);
+        	callback(false,"Internal Server Error");
+        	return;
+    	} else {
+    	    callback(true,data);
+    	    return;
+    	}
+	});
+}
 /*
 * get all of the user list
 */

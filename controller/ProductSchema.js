@@ -5,7 +5,11 @@ ProductSchema = mongoose.Schema({
 	name: String,
 	url: String,
 	createdDate: String,
-	tag: [String]
+	tag: [String],
+	rating: Number,
+	price: String,
+	review: [String],
+	ID: String
 });
 
 ProductSchema.plugin(autoIncrement.plugin, 'Product');

@@ -1,87 +1,37 @@
 $(document).ready(function(){
 
-/*--------------------------------------------------------------------
-Click close button to delete specific trip
----------------------------------------------------------------------*/
-	$('.deleteTrip').click(function(){
-		var id = $(this).data('id');
-		//alert(id);
-		var c = confirm("Are you sure to delete this trip (#"+id+")?");
-		if(c){
-			$.ajax({
-				type: "DELETE",
-				url: "/api/trips/" + id,
-				success: function(){
-					$('.trip-row[data-id='+id+']').remove();
-				},
-				error: function(err){
-					alert(err);
-				}
-			})
-			
-		}
-	});
+	$('#searchFacebookButton').click(function(){
+		var urlRegEx = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+		var receiver = $('#searchFacebook').val();
+		if (receiver != null){
+			receiver = receiver.match(urlRegEx)[0];
+			var recommendation = {
+		      sender: -1,
+		      receiver: receiver,
+		      receiverTags: [],
+		      productID: [],
+		      productName: null,
+		      rating: -1,
+		      date: Date()
+		    };
 
-/*--------------------------------------------------------------------
-Get the search criterai from the website
-And valid each of them, if they are valid, send to the server to corresponding functoin
-If not valid, alert user to get correct data.
----------------------------------------------------------------------*/
-	$('#findTrip').click(function(){
-		var provider;
-		provider = $('input[name=type]:checked',"#tripForm").val();
-		var currentTime = new Date();
-		var tempDate = $("#expectedDate").val().replace("T", " ") + " GMT-0500 (Eastern Standard Time)";
-		var expectedDate = new Date(tempDate);
-		var reg = /^\d+$/;
-		var checkPrice = $('#expectedPrice').val();
-		var searchDistance = $('#searchDistance').val();
-		console.log(searchDistance);
-		if (currentTime > expectedDate || expectedDate == null){
-			//Check for date entered is after the time right now
-			alert("Please Select a Date After RIGHT NOW!");
-		}
-		else if ($("#fromWhere").val() == '' || $("#toWhere").val() == ''){
-			alert("Please Enter your From And To places");
-		}
-		else if(provider == null){
-			alert("Please choose Trip Provider or Trip Wanted");
-		}
-		else if (checkPrice != ''){
-			if (!reg.test(checkPrice)){
-				alert("Please Input a NUMBER only or nothing for price");
-			}
-			else{
-				if (!reg.test(searchDistance)){
-					alert("Please Input a Number only or nothing for search offset");
+			$.ajax({
+				type: "POST",
+				url: "/facebookProfile",
+				data: recommendation,
+				success: function(data){
+					console.log(data._id);
+					window.location.href = "/searchAndShowproducts/" +  data._id;
+				},
+				error: function(){
+					alert("Error in Finding a Recommendation");
 				}
-				else{
-					updateTrip(provider,expectedDate);
-				}
-			}
-		}
-		else if (searchDistance != ''){
-			if (!reg.test(searchDistance)){
-				alert("Please Input a Number only or nothing for search offset");
-			}
-			else{
-				updateTrip(provider,expectedDate);
-			}			
+			});
 		}
 		else{
-			updateTrip(provider,expectedDate);
+			alert("You must imput a valid Facebook Profile URL!");
 		}
 	});
-
-/*--------------------------------------------------------------------
-If click list of trip, search for the clicked item
----------------------------------------------------------------------*/
-	$('.trip-row').click(function(){
-	  var ids = $(this).data('id');
-	  var url = "/searchTrip/" + ids;
-	  window.location.href = url;
-	});
-
 /*--------------------------------------------------------------------
 If click on one user row, go to the user's profile
 ---------------------------------------------------------------------*/

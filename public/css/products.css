@@ -41,11 +41,7 @@ dd{
 }
 
 
-.trip-row:hover {
-    cursor: pointer;
-}
-
-.similar-trip-row {
+.product-row:hover {
     cursor: pointer;
 }
 
@@ -53,12 +49,7 @@ dd{
     object-fit: cover;
 }
 
-#recommendation{ 
-    overflow-y: auto;
-    height: 300px;
-}
-
 #content{
     overflow-y: auto;
-    height: 400px;
+    height: 500px;
 }

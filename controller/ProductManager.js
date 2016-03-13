@@ -55,6 +55,34 @@ ProductManager.prototype.findProduct = function(recommendation, callback){
 		}		
 	});*/
 }
+
+ProductManager.prototype.findAllProductsByID = function(recommendation, callback){
+	//console.log(recommendation);
+	Product.find({ID: {$in: recommendation.productID}},function(err,products){
+		if(err){
+    		console.log("[ERROR]: fail to find one product for the tags given");
+        	callback(false,"Internal Server Error");
+        	return;
+		}
+		else{
+			callback(true, products);
+			return;
+		}
+	});
+}
+
+ProductManager.prototype.findProductById = function(productId, callback){
+	Product.findOne({ID:productId}, function(err, product){
+		if(err){
+    		console.log("[ERROR]: fail to find one product for the tags given");
+        	callback(false,"Internal Server Error");
+        	return;
+		}
+		else{
+			callback(true,product);
+		}		
+	});
+}
 /*-------------------------------------------------------
 Export for usage
 --------------------------------------------------------*/
