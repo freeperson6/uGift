@@ -1,7 +1,7 @@
 {
-  "name": "carpool",
+  "name": "uGift",
   "version": "0.1.0",
-  "description": "CSC309: Assignment 5",
+  "description": "Capstone",
   "main": "server.js",
   "dependencies": {
     "angular": "~1.4.7",
