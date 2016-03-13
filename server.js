@@ -95,8 +95,8 @@ app.use(function(req, res, next) {
 /*------------------------------------------------------
 Managers and databases:
 -------------------------------------------------------*/
-var MONGODB_URL = 'mongodb://localhost/';
-//var MONGODB_URL = 'mongodb://carpool309:muchbetterthanuber@ds055564.mongolab.com:55564/heroku_7wrc6q07';
+//var MONGODB_URL = 'mongodb://localhost/';
+var MONGODB_URL = 'mongodb://ugift:ugift@ds011369.mlab.com:11369/ugift';
 
 //User databse
 var UserManager = require('./controller/UserManager.js');
